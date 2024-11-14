@@ -1,0 +1,83 @@
+pip install pandas scikit-learn
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import Ridge, Lasso
+from sklearn.metrics import mean_squared_error
+
+# Load the dataset
+data = pd.read_csv('boston_houses.csv')  # Replace with your dataset path
+
+# Select only 'RM' and 'Price' columns
+data = data[['RM', 'Price']]
+
+# Separate features and target variable
+X = data[['RM']]  # Features
+y = data['Price']  # Target variable
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create and fit Ridge Regression model
+ridge_model = Ridge(alpha=1.0)  # You can adjust alpha for regularization strength
+ridge_model.fit(X_train, y_train)
+
+# Create and fit Lasso Regression model
+lasso_model = Lasso(alpha=1.0)  # You can adjust alpha for regularization strength
+lasso_model.fit(X_train, y_train)
+
+# Predict the price of a house with 5 rooms
+rooms = [[5]]
+ridge_price = ridge_model.predict(rooms)
+lasso_price = lasso_model.predict(rooms)
+
+# Print the results
+print(f'Ridge Regression predicted price for a house with 5 rooms: ${ridge_price[0]:.2f}')
+print(f'Lasso Regression predicted price for a house with 5 rooms: ${lasso_price[0]:.2f}')
+
+# Evaluate the models
+ridge_predictions = ridge_model.predict(X_test)
+lasso_predictions = lasso_model.predict(X_test)
+
+ridge_mse = mean_squared_error(y_test, ridge_predictions)
+lasso_mse = mean_squared_error(y_test, lasso_predictions)
+
+print(f'Ridge Regression Mean Squared Error: {ridge_mse:.2f}')
+print(f'Lasso Regression Mean Squared Error: {lasso_mse:.2f}')
+
+
+
+pip install pandas scikit-learn
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, classification_report
+
+# Load the dataset
+data = pd.read_csv('UniversalBank.csv')  # Replace with your dataset path
+
+# Display the first few rows of the dataset
+print(data.head())
+
+# Preprocessing: Select relevant features and the target variable
+# Assuming 'Personal Loan' is the target variable
+features = ['Age', 'Experience', 'Income', 'Family', 'CCAvg', 'Education', 'Mortgage']
+X = data[features]
+y = data['Personal Loan']  # Target variable
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create and fit a Linear SVM model
+model = SVC(kernel='linear')
+model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy:.2f}')
+print('Classification Report:')
+print(classification_report(y_test, y_pred))

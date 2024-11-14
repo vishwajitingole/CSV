@@ -1,0 +1,34 @@
+dataset.csv
+id,age,income,city
+1,25,50000,New York
+2,30,,Los Angeles
+3,22,45000,Chicago
+4,28,60000,
+5,,70000,Houston
+6,35,80000,Phoenix
+7,40,75000,Philadelphia
+8,,90000,San Antonio
+9,32,58000,San Diego
+10,27,62000,Dallas
+
+
+
+pip install pandas
+
+
+import pandas as pd
+
+# Load the dataset (replace with your dataset path)
+data = pd.read_csv('dataset.csv')  # Ensure the file exists or use another path
+
+# Check for null values
+null_values = data.isnull().sum()
+print("Null values in each column:")
+print(null_values[null_values > 0])  # Display columns with null values
+
+# Remove rows with null values
+cleaned_data = data.dropna()
+
+# Save the cleaned dataset to a new CSV file
+cleaned_data.to_csv('cleaned_dataset.csv', index=False)
+print("Cleaned dataset saved as 'cleaned_dataset.csv'.")

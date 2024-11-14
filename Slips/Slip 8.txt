@@ -1,0 +1,104 @@
+pip install pandas scikit-learn
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import make_pipeline
+from sklearn.metrics import accuracy_score, classification_report
+
+# Load the dataset
+data = pd.read_csv('news_data.csv')  # Replace with your dataset path
+
+# Display the first few rows of the dataset
+print(data.head())
+
+# Assuming the dataset has columns 'text' for news articles and 'category' for labels
+X = data['text']        # Features (news text)
+y = data['category']    # Target variable (news categories)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create a pipeline that combines CountVectorizer and MultinomialNB
+model = make_pipeline(CountVectorizer(), MultinomialNB())
+
+# Fit the model to the training data
+model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy:.2f}')
+print('Classification Report:')
+print(classification_report(y_test, y_pred))
+
+# Example of predicting a new news article
+new_article = ["The stock market has seen significant fluctuations this week."]
+predicted_category = model.predict(new_article)
+print(f'Predicted category for the new article: {predicted_category[0]}')
+
+
+
+pip install pandas scikit-learn
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Sample dataset creation (you can replace this with loading from a CSV file)
+data = {
+    'Outlook': ['Sunny', 'Sunny', 'Overcast', 'Rain', 'Rain', 'Rain', 'Overcast', 'Sunny', 'Sunny', 'Rain', 'Sunny', 'Overcast', 'Overcast', 'Rain'],
+    'Temperature': ['Hot', 'Hot', 'Hot', 'Mild', 'Cool', 'Cool', 'Mild', 'Mild', 'Hot', 'Mild', 'Mild', 'Hot', 'Cool', 'Cool'],
+    'Humidity': ['High', 'High', 'High', 'High', 'Normal', 'Normal', 'Normal', 'High', 'Normal', 'Normal', 'High', 'Normal', 'Normal', 'High'],
+    'Windy': [False, True, False, False, False, True, True, False, False, False, True, True, False, True],
+    'Play': ['No', 'No', 'Yes', 'Yes', 'Yes', 'No', 'Yes', 'No', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'No']
+}
+
+# Create a DataFrame
+df = pd.DataFrame(data)
+
+# Convert categorical variables to numerical using one-hot encoding
+df = pd.get_dummies(df, drop_first=True)
+
+# Separate features and target variable
+X = df.drop('Play_Yes', axis=1)  # Features
+y = df['Play_Yes']                # Target variable (1 for Yes, 0 for No)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create a Decision Tree classifier
+model = DecisionTreeClassifier()
+
+# Fit the model to the training data
+model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy:.2f}')
+print('Classification Report:')
+print(classification_report(y_test, y_pred))
+
+# Example of predicting whether to play tennis based on new conditions
+new_conditions = pd.DataFrame({
+    'Outlook_Overcast': [0],
+    'Outlook_Rain': [0],
+    'Outlook_Sunny': [1],
+    'Temperature_Cool': [0],
+    'Temperature_Hot': [1],
+    'Temperature_Mild': [0],
+    'Humidity_High': [0],
+    'Humidity_Normal': [1],
+    'Windy_True': [0],
+    'Windy_False': [1]
+})
+
+predicted_play = model.predict(new_conditions)
+print(f'Predicted decision to play tennis: {"Yes" if predicted_play[0] else "No"}')

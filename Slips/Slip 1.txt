@@ -1,0 +1,55 @@
+pip install pandas mlxtend
+
+import pandas as pd
+from mlxtend.frequent_patterns import apriori, association_rules
+
+# Sample groceries dataset
+# You can replace this with your actual dataset
+data = {
+    'Transaction': [1, 1, 1, 2, 2, 3, 3, 3, 4, 4],
+    'Item': ['Milk', 'Bread', 'Eggs', 'Bread', 'Diaper', 'Milk', 'Bread', 'Diaper', 'Milk', 'Eggs']
+}
+
+# Create a DataFrame
+df = pd.DataFrame(data)
+
+# One-hot encoding the dataset
+basket = df.pivot_table(index='Transaction', columns='Item', aggfunc='size', fill_value=0)
+
+# Apply the Apriori algorithm
+frequent_itemsets = apriori(basket, min_support=0.25, use_colnames=True)
+
+# Generate the association rules
+rules = association_rules(frequent_itemsets, metric="support", min_threshold=0.25)
+
+# Display the results
+print("Frequent Itemsets:")
+print(frequent_itemsets)
+print("\nAssociation Rules:")
+print(rules)
+
+
+
+
+
+
+pip install pandas matplotlib seaborn
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the Iris dataset
+iris = sns.load_dataset('iris')
+
+# Convert categorical species to numeric
+iris['species'] = iris['species'].astype('category').cat.codes
+
+# Create a scatter plot
+plt.figure(figsize=(8, 6))
+sns.scatterplot(data=iris, x='sepal_length', y='sepal_width', hue='species', palette='deep')
+plt.title('Scatter Plot of Iris Dataset')
+plt.xlabel('Sepal Length')
+plt.ylabel('Sepal Width')
+plt.legend(title='Species')
+plt.show()

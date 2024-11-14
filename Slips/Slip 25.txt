@@ -1,0 +1,41 @@
+pip install pandas numpy scikit-learn matplotlib
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+
+# Load dataset
+data = pd.read_csv('house_price_data.csv')  # Replace with your dataset path
+
+# Select features and target
+X = data[['area', 'bedrooms', 'bathrooms', 'stories', 'mainroad', 'guestroom', 'basement', 'hotwaterheating', 'aircondit']]
+y = data['price']
+
+# Convert categorical variables to dummy variables
+X = pd.get_dummies(X, drop_first=True)
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create polynomial features
+poly = PolynomialFeatures(degree=2)  # You can adjust the degree as needed
+X_poly_train = poly.fit_transform(X_train)
+X_poly_test = poly.transform(X_test)
+
+# Fit the Polynomial Regression model
+model = LinearRegression()
+model.fit(X_poly_train, y_train)
+
+# Predicting prices
+y_pred = model.predict(X_poly_test)
+
+# Plotting the results
+plt.scatter(y_test, y_pred, color='blue')
+plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linestyle='--')
+plt.xlabel('Actual Prices')
+plt.ylabel('Predicted Prices')
+plt.title('Polynomial Regression: Actual vs Predicted Prices')
+plt.show()

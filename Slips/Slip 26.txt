@@ -1,0 +1,41 @@
+pip install pandas scikit-learn
+
+import pandas as pd
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
+# Load the diabetes dataset (replace with your dataset path)
+data = pd.read_csv('diabetes.csv')  # Ensure the file exists or use another path
+
+# Features and target variable
+X = data.drop('Outcome', axis=1)  # Features
+y = data['Outcome']  # Target: 0 (not diabetic) or 1 (diabetic)
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Find the optimal value of K using GridSearchCV
+param_grid = {'n_neighbors': range(1, 21)}
+grid = GridSearchCV(KNeighborsClassifier(), param_grid, cv=5)
+grid.fit(X_train, y_train)
+
+# Best K value
+optimal_k = grid.best_params_['n_neighbors']
+print(f'Optimal value of K: {optimal_k}')
+
+# Train KNN with optimal K
+knn = KNeighborsClassifier(n_neighbors=optimal_k)
+knn.fit(X_train, y_train)
+
+# Predictions
+y_pred = knn.predict(X_test)
+
+# Accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy of the KNN model with K={optimal_k}: {accuracy:.2f}')
+
+# Example of making a prediction for a new patient
+new_patient = [[5, 116, 74, 0, 0, 25.6, 0.201, 30]]  # Replace with actual input
+predicted_outcome = knn.predict(new_patient)[0]
+print(f'The predicted outcome for the new patient is: {"Diabetic" if predicted_outcome == 1 else "Not Diabetic"}')
